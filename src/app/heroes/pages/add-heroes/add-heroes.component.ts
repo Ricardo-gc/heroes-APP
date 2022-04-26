@@ -7,7 +7,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-add-heroes',
   templateUrl: './add-heroes.component.html',
-  styles: [
+  styles: [`
+    img{
+      width: 100%;
+      border-radius: 5px;
+    }
+  `
   ]
 })
 export class AddHeroesComponent implements OnInit {
@@ -35,6 +40,10 @@ export class AddHeroesComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit(): void {
+
+    if ( this.router.url.includes('agregar') ){
+      return;
+    }
     this.activatedRoute.params
       .pipe(switchMap(({id}) => this.heroesService.getHeroeById(id)))
       .subscribe( heroe => this.heroe = heroe);
@@ -57,5 +66,12 @@ export class AddHeroesComponent implements OnInit {
           this.router.navigate(['/heroes/editar', heroe.id]);
         })
     }
+  }
+
+  borrarHeroe(){
+    this.heroesService.deleteHeroe(this.heroe.id!)
+    .subscribe(resp => {
+      this.router.navigate(['/heroes']);
+    })
   }
 }
